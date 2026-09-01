@@ -1,0 +1,2180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ATELIER CUT — Luxury Barbershop</title>
+    <meta name="description" content="ATELIER CUT — A modern luxury barbershop. Precision cuts, expert grooming, and an experience worth returning to.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="icon" type="image/x-icon" href="icons8-barbershop-48.pngg">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #0a0a0a;
+            --charcoal: #111111;
+            --smoke: #1c1c1c;
+            --ivory: #f5f0e8;
+            --warm-white: #faf8f4;
+            --off-white: #f0ebe3;
+            --gold: #b8a078;
+            --gold-light: #d4c5a9;
+            --gold-dark: #8b744d;
+            --brown: #6b5235;
+            --deep-green: #1a2421;
+            --burgundy: #5c1f28;
+            --muted: #9a9a9a;
+            --font-serif: 'Playfair Display', serif;
+            --font-sans: 'Inter', sans-serif;
+            --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+            --ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+            --nav-height: 80px;
+            --section-padding: 100px;
+            --container: 1360px;
+        }
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            font-size: 16px;
+        }
+        body {
+            background: var(--black);
+            color: var(--ivory);
+            font-family: var(--font-sans);
+            font-weight: 300;
+            line-height: 1.7;
+            overflow-x: hidden;
+            cursor: none;
+            min-height: 100vh;
+        }
+        body.modal-open {
+            overflow: hidden;
+        }
+        ::selection {
+            background: var(--gold);
+            color: var(--black);
+        }
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+        img {
+            display: block;
+            max-width: 100%;
+            height: auto;
+        }
+        button {
+            cursor: none;
+            font-family: var(--font-sans);
+            background: none;
+            border: none;
+            color: inherit;
+        }
+        input,
+        select,
+        textarea {
+            cursor: none;
+            font-family: var(--font-sans);
+            color: var(--ivory);
+        }
+
+        /* Custom Cursor */
+        .cursor-dot,
+        .cursor-ring {
+            position: fixed;
+            pointer-events: none;
+            z-index: 99999;
+            border-radius: 50%;
+            top: 0;
+            left: 0;
+            mix-blend-mode: difference;
+        }
+        .cursor-dot {
+            width: 6px;
+            height: 6px;
+            background: var(--white);
+            transform: translate(-50%, -50%);
+            transition: width 0.3s ease, height 0.3s ease, background 0.3s ease;
+        }
+        .cursor-ring {
+            width: 44px;
+            height: 44px;
+            border: 1.5px solid rgba(255, 255, 255, 0.35);
+            transform: translate(-50%, -50%);
+            transition: width 0.4s var(--ease-out), height 0.4s var(--ease-out),
+                border-color 0.3s ease, background 0.3s ease;
+        }
+        .cursor-ring.is-active {
+            width: 68px;
+            height: 68px;
+            border-color: var(--gold);
+            background: rgba(184, 160, 120, 0.08);
+        }
+        .cursor-dot.is-active {
+            width: 4px;
+            height: 4px;
+            background: var(--gold);
+        }
+        @media (max-width: 768px) {
+            body {
+                cursor: auto;
+            }
+            .cursor-dot,
+            .cursor-ring {
+                display: none;
+            }
+            input,
+            select,
+            textarea,
+            button {
+                cursor: auto;
+            }
+        }
+
+        /* Preloader */
+        .preloader {
+            position: fixed;
+            inset: 0;
+            background: var(--black);
+            z-index: 100000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s var(--ease-out), visibility 0.8s var(--ease-out);
+        }
+        .preloader.hidden {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+        .preloader-word {
+            font-family: var(--font-serif);
+            font-size: clamp(2rem, 5vw, 3rem);
+            font-weight: 300;
+            letter-spacing: 0.4em;
+            color: var(--gold);
+            animation: preloaderFade 1.6s ease-in-out forwards;
+            text-indent: 0.4em;
+        }
+        @keyframes preloaderFade {
+            0% {
+                opacity: 0;
+                letter-spacing: 0.7em;
+            }
+            50% {
+                opacity: 1;
+            }
+            100% {
+                opacity: 0;
+                letter-spacing: 0.2em;
+            }
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            padding: 0 48px;
+            height: var(--nav-height);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.5s var(--ease-out), border-color 0.5s var(--ease-out),
+                backdrop-filter 0.5s var(--ease-out), padding 0.5s var(--ease-out), height 0.5s var(--ease-out);
+            border-bottom: 1px solid transparent;
+            background: transparent;
+        }
+        .nav.scrolled {
+            background: rgba(10, 10, 10, 0.88);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border-bottom-color: rgba(255, 255, 255, 0.05);
+            padding: 0 32px;
+            height: 60px;
+        }
+        .nav-brand {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            font-weight: 400;
+            letter-spacing: 0.3em;
+            color: var(--white);
+            transition: font-size 0.5s var(--ease-out);
+            position: relative;
+            z-index: 1002;
+        }
+        .nav.scrolled .nav-brand {
+            font-size: 1.15rem;
+        }
+        .nav-brand span {
+            color: var(--gold);
+            font-weight: 300;
+        }
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+            position: relative;
+            z-index: 1001;
+            align-items: center;
+        }
+        .nav-links a {
+            font-size: 0.7rem;
+            font-weight: 400;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.65);
+            transition: color 0.4s var(--ease-out), letter-spacing 0.4s var(--ease-out);
+            position: relative;
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background: var(--gold);
+            transition: width 0.5s var(--ease-out);
+        }
+        .nav-links a:hover {
+            color: var(--white);
+            letter-spacing: 0.24em;
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        .nav-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+            position: relative;
+            z-index: 1001;
+        }
+        .nav-book-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            font-weight: 500;
+            background: var(--gold);
+            color: var(--black);
+            border-radius: 2px;
+            transition: all 0.4s var(--ease-out);
+            border: 1px solid var(--gold);
+        }
+        .nav-book-btn:hover {
+            background: var(--gold-light);
+            border-color: var(--gold-light);
+            transform: translateY(-1px);
+        }
+        .nav-search-btn {
+            font-size: 0.7rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.6);
+            transition: color 0.4s var(--ease-out);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .nav-search-btn:hover {
+            color: var(--gold);
+        }
+        .nav-mobile-toggle {
+            display: none;
+            width: 26px;
+            height: 18px;
+            flex-direction: column;
+            justify-content: space-between;
+            background: none;
+            border: none;
+            padding: 0;
+        }
+        .nav-mobile-toggle span {
+            display: block;
+            width: 100%;
+            height: 1.5px;
+            background: var(--white);
+            transition: transform 0.4s var(--ease-out), opacity 0.4s var(--ease-out);
+        }
+        @media (max-width: 1024px) {
+            .nav {
+                padding: 0 24px;
+            }
+            .nav.scrolled {
+                padding: 0 20px;
+            }
+            .nav-links {
+                gap: 20px;
+            }
+            .nav-links a {
+                font-size: 0.6rem;
+            }
+            .nav-book-btn {
+                padding: 10px 16px;
+                font-size: 0.6rem;
+            }
+        }
+        @media (max-width: 768px) {
+            .nav {
+                padding: 0 20px;
+                height: 64px;
+            }
+            .nav.scrolled {
+                padding: 0 16px;
+                height: 52px;
+            }
+            .nav-links {
+                display: none;
+            }
+            .nav-mobile-toggle {
+                display: flex;
+                position: relative;
+                z-index: 1002;
+            }
+            .nav-mobile-toggle.active span:nth-child(1) {
+                transform: translateY(8.25px) rotate(45deg);
+            }
+            .nav-mobile-toggle.active span:nth-child(2) {
+                opacity: 0;
+            }
+            .nav-mobile-toggle.active span:nth-child(3) {
+                transform: translateY(-8.25px) rotate(-45deg);
+            }
+            .nav-actions {
+                gap: 12px;
+            }
+            .nav-search-btn span.nav-label {
+                display: none;
+            }
+            .nav-book-btn {
+                padding: 10px 14px;
+                font-size: 0.55rem;
+            }
+        }
+
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 10, 10, 0.98);
+            z-index: 998;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 28px;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s var(--ease-out), visibility 0.5s var(--ease-out);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .mobile-menu.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .mobile-menu a {
+            font-family: var(--font-serif);
+            font-size: 1.8rem;
+            font-weight: 300;
+            letter-spacing: 0.12em;
+            color: var(--ivory);
+            transition: color 0.4s var(--ease-out), letter-spacing 0.4s var(--ease-out);
+        }
+        .mobile-menu a:hover {
+            color: var(--gold);
+            letter-spacing: 0.16em;
+        }
+        .mobile-menu .mobile-book-btn {
+            font-family: var(--font-sans);
+            font-size: 0.7rem;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            background: var(--gold);
+            color: var(--black);
+            padding: 14px 32px;
+            border-radius: 2px;
+            font-weight: 500;
+        }
+
+        /* Hero */
+        .hero {
+            position: relative;
+            height: 100vh;
+            min-height: 600px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--black);
+        }
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            object-position: center 40%;
+            opacity: 0.5;
+            animation: heroZoom 3.5s var(--ease-out) forwards;
+            transform: scale(1.08);
+        }
+        @keyframes heroZoom {
+            to {
+                transform: scale(1);
+            }
+        }
+        .hero-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to bottom,
+                    rgba(10, 10, 10, 0.55) 0%,
+                    rgba(10, 10, 10, 0.25) 40%,
+                    rgba(10, 10, 10, 0.75) 100%);
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            max-width: 850px;
+            padding: 0 24px;
+        }
+        .hero-eyebrow {
+            font-size: 0.65rem;
+            letter-spacing: 0.5em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: heroFadeUp 1s var(--ease-out) 0.4s forwards;
+        }
+        .hero-title {
+            font-family: var(--font-serif);
+            font-size: clamp(2.2rem, 6vw, 4.8rem);
+            font-weight: 300;
+            letter-spacing: 0.06em;
+            line-height: 1.15;
+            color: var(--white);
+            margin-bottom: 20px;
+            opacity: 0;
+            animation: heroFadeUp 1s var(--ease-out) 0.6s forwards;
+        }
+        .hero-title em {
+            font-style: italic;
+            color: var(--gold-light);
+        }
+        .hero-subtitle {
+            font-size: clamp(0.8rem, 1.3vw, 0.95rem);
+            font-weight: 300;
+            letter-spacing: 0.2em;
+            color: rgba(255, 255, 255, 0.65);
+            margin-bottom: 40px;
+            opacity: 0;
+            animation: heroFadeUp 1s var(--ease-out) 0.8s forwards;
+        }
+        .hero-cta {
+            display: flex;
+            gap: 16px;
+            justify-content: center;
+            flex-wrap: wrap;
+            opacity: 0;
+            animation: heroFadeUp 1s var(--ease-out) 1s forwards;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 16px 32px;
+            font-size: 0.65rem;
+            letter-spacing: 0.22em;
+            text-transform: uppercase;
+            font-weight: 500;
+            transition: all 0.45s var(--ease-out);
+            border: 1px solid transparent;
+            border-radius: 2px;
+            cursor: none;
+        }
+        .btn-primary {
+            background: var(--gold);
+            color: var(--black);
+            border-color: var(--gold);
+        }
+        .btn-primary:hover {
+            background: var(--gold-light);
+            border-color: var(--gold-light);
+            transform: translateY(-2px);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--white);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+        .btn-outline:hover {
+            border-color: var(--white);
+            background: rgba(255, 255, 255, 0.06);
+            transform: translateY(-2px);
+        }
+        @keyframes heroFadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(28px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .hero-scroll-indicator {
+            position: absolute;
+            bottom: 28px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+            color: rgba(255, 255, 255, 0.45);
+            font-size: 0.55rem;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            opacity: 0;
+            animation: heroFadeUp 0.8s var(--ease-out) 1.3s forwards;
+        }
+        .hero-scroll-indicator::after {
+            content: '';
+            width: 1px;
+            height: 36px;
+            background: linear-gradient(to bottom, rgba(255, 255, 255, 0.5), transparent);
+            animation: scrollPulse 2s ease-in-out infinite;
+        }
+        @keyframes scrollPulse {
+            0%,
+            100% {
+                transform: scaleY(1);
+                opacity: 1;
+            }
+            50% {
+                transform: scaleY(0.6);
+                opacity: 0.4;
+            }
+        }
+
+        /* Section Base */
+        .section {
+            padding: var(--section-padding) 48px;
+            position: relative;
+        }
+        .section-header {
+            text-align: center;
+            max-width: 750px;
+            margin: 0 auto 50px;
+        }
+        .section-tag {
+            font-size: 0.6rem;
+            letter-spacing: 0.45em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 14px;
+            display: block;
+        }
+        .section-title {
+            font-family: var(--font-serif);
+            font-size: clamp(1.8rem, 4vw, 3.2rem);
+            font-weight: 300;
+            letter-spacing: 0.04em;
+            line-height: 1.2;
+            color: var(--white);
+            margin-bottom: 18px;
+        }
+        .section-title em {
+            font-style: italic;
+            color: var(--gold-light);
+        }
+        .section-text {
+            font-size: 0.85rem;
+            font-weight: 300;
+            letter-spacing: 0.06em;
+            color: rgba(255, 255, 255, 0.55);
+            line-height: 1.9;
+            max-width: 550px;
+            margin: 0 auto;
+        }
+        @media (max-width: 768px) {
+            .section {
+                padding: 60px 20px;
+            }
+            .section-header {
+                margin-bottom: 36px;
+            }
+        }
+
+        /* Reveal Animations */
+        .reveal {
+            opacity: 0;
+            transform: translateY(36px);
+            transition: opacity 0.85s var(--ease-out), transform 0.85s var(--ease-out);
+        }
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        .reveal-delay-1 {
+            transition-delay: 0.1s;
+        }
+        .reveal-delay-2 {
+            transition-delay: 0.2s;
+        }
+        .reveal-delay-3 {
+            transition-delay: 0.3s;
+        }
+        .reveal-delay-4 {
+            transition-delay: 0.4s;
+        }
+
+        /* Quick Booking */
+        .booking-section {
+            background: var(--charcoal);
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+        }
+        .booking-container {
+            max-width: var(--container);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            align-items: center;
+        }
+        .booking-info .section-tag {
+            text-align: left;
+            margin-bottom: 10px;
+        }
+        .booking-info h2 {
+            font-family: var(--font-serif);
+            font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+            font-weight: 300;
+            letter-spacing: 0.04em;
+            color: var(--white);
+            margin-bottom: 12px;
+            line-height: 1.25;
+        }
+        .booking-info p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            line-height: 1.8;
+            max-width: 380px;
+        }
+        .booking-form {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            background: rgba(255, 255, 255, 0.02);
+            padding: 24px;
+            border-radius: 3px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+        .booking-field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .booking-field.full-width {
+            grid-column: span 2;
+        }
+        .booking-field label {
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.45);
+            font-weight: 400;
+        }
+        .booking-field select,
+        .booking-field input {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            padding: 12px 14px;
+            font-size: 0.75rem;
+            letter-spacing: 0.06em;
+            color: var(--ivory);
+            outline: none;
+            transition: border-color 0.3s var(--ease-out), background 0.3s var(--ease-out);
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: none;
+        }
+        .booking-field select:focus,
+        .booking-field input:focus {
+            border-color: var(--gold);
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .booking-field select option {
+            background: var(--charcoal);
+            color: var(--ivory);
+            cursor: none;
+        }
+        .booking-submit {
+            grid-column: span 2;
+            padding: 14px;
+            background: var(--gold);
+            color: var(--black);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            font-weight: 500;
+            border: 1px solid var(--gold);
+            border-radius: 2px;
+            transition: all 0.4s var(--ease-out);
+            cursor: none;
+        }
+        .booking-submit:hover {
+            background: var(--gold-light);
+            border-color: var(--gold-light);
+        }
+        @media (max-width: 768px) {
+            .booking-container {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            .booking-form {
+                padding: 16px;
+                gap: 8px;
+            }
+            .booking-field select,
+            .booking-field input {
+                padding: 10px 12px;
+                font-size: 0.7rem;
+            }
+        }
+        @media (max-width: 480px) {
+            .booking-form {
+                grid-template-columns: 1fr;
+            }
+            .booking-field.full-width {
+                grid-column: span 1;
+            }
+            .booking-submit {
+                grid-column: span 1;
+            }
+        }
+
+        /* The Experience */
+        .experience-section {
+            background: var(--black);
+        }
+        .experience-grid {
+            display: grid;
+            grid-template-columns: 1.1fr 0.9fr;
+            gap: 60px;
+            align-items: center;
+            max-width: var(--container);
+            margin: 0 auto;
+        }
+        .experience-image {
+            position: relative;
+            overflow: hidden;
+            aspect-ratio: 4/5;
+            border-radius: 3px;
+        }
+        .experience-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1.1s var(--ease-out);
+        }
+        .experience-image:hover img {
+            transform: scale(1.04);
+        }
+        .experience-details .section-tag {
+            margin-bottom: 10px;
+        }
+        .experience-details h2 {
+            font-family: var(--font-serif);
+            font-size: clamp(1.6rem, 3vw, 2.5rem);
+            font-weight: 300;
+            letter-spacing: 0.04em;
+            color: var(--white);
+            margin-bottom: 14px;
+            line-height: 1.2;
+        }
+        .experience-details p {
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 0.82rem;
+            letter-spacing: 0.05em;
+            line-height: 1.85;
+            margin-bottom: 12px;
+            max-width: 420px;
+        }
+        .experience-details .btn {
+            margin-top: 16px;
+        }
+        @media (max-width: 768px) {
+            .experience-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+        }
+
+        /* Services */
+        .services-section {
+            background: var(--charcoal);
+        }
+        .services-list {
+            max-width: var(--container);
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .service-item {
+            padding: 32px 36px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background 0.4s var(--ease-out), border-color 0.4s var(--ease-out);
+            cursor: none;
+            position: relative;
+        }
+        .service-item:nth-child(even) {
+            border-right: none;
+        }
+        .service-item:nth-last-child(-n+2) {
+            border-bottom: none;
+        }
+        .service-item:hover {
+            background: rgba(255, 255, 255, 0.02);
+            border-color: rgba(184, 160, 120, 0.2);
+        }
+        .service-item .service-name {
+            font-family: var(--font-serif);
+            font-size: 1.2rem;
+            font-weight: 400;
+            letter-spacing: 0.06em;
+            color: var(--white);
+            margin-bottom: 6px;
+        }
+        .service-item .service-desc {
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            color: rgba(255, 255, 255, 0.45);
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+        .service-item .service-price {
+            font-size: 0.85rem;
+            letter-spacing: 0.1em;
+            color: var(--gold);
+            font-weight: 500;
+        }
+        .service-item .service-duration {
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.35);
+            position: absolute;
+            top: 32px;
+            right: 36px;
+        }
+        @media (max-width: 768px) {
+            .services-list {
+                grid-template-columns: 1fr;
+            }
+            .service-item {
+                border-right: none;
+            }
+            .service-item:nth-last-child(-n+2) {
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+            .service-item:last-child {
+                border-bottom: none;
+            }
+            .service-item {
+                padding: 24px;
+            }
+        }
+
+        /* Barbers */
+        .barbers-section {
+            background: var(--black);
+        }
+        .barbers-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 28px;
+            max-width: var(--container);
+            margin: 0 auto;
+        }
+        .barber-card {
+            text-align: center;
+            cursor: none;
+        }
+        .barber-image {
+            aspect-ratio: 3/4;
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+            background: var(--charcoal);
+            margin-bottom: 18px;
+        }
+        .barber-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s var(--ease-out);
+        }
+        .barber-card:hover .barber-image img {
+            transform: scale(1.05);
+        }
+        .barber-name {
+            font-family: var(--font-serif);
+            font-size: 1.1rem;
+            font-weight: 400;
+            letter-spacing: 0.06em;
+            color: var(--white);
+            margin-bottom: 4px;
+        }
+        .barber-title {
+            font-size: 0.65rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 8px;
+        }
+        .barber-bio {
+            font-size: 0.7rem;
+            letter-spacing: 0.04em;
+            color: rgba(255, 255, 255, 0.45);
+            max-width: 260px;
+            margin: 0 auto;
+            line-height: 1.6;
+        }
+        .barber-book-link {
+            display: inline-block;
+            margin-top: 12px;
+            font-size: 0.55rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            border-bottom: 1px solid var(--gold-dark);
+            padding-bottom: 2px;
+            transition: color 0.3s var(--ease-out), border-color 0.3s var(--ease-out);
+        }
+        .barber-book-link:hover {
+            color: var(--gold-light);
+            border-color: var(--gold-light);
+        }
+        @media (max-width: 768px) {
+            .barbers-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+        }
+
+        /* Gallery */
+        .gallery-section {
+            background: var(--charcoal);
+        }
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            max-width: var(--container);
+            margin: 0 auto;
+        }
+        .gallery-item {
+            aspect-ratio: 1/1;
+            border-radius: 2px;
+            overflow: hidden;
+            position: relative;
+            cursor: none;
+            background: var(--smoke);
+        }
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s var(--ease-out), opacity 0.7s var(--ease-out);
+            opacity: 0.7;
+        }
+        .gallery-item:hover img {
+            transform: scale(1.06);
+            opacity: 1;
+        }
+        .gallery-item:nth-child(1) {
+            grid-column: span 2;
+            grid-row: span 2;
+            aspect-ratio: auto;
+        }
+        .gallery-item:nth-child(4) {
+            grid-column: span 2;
+        }
+        @media (max-width: 768px) {
+            .gallery-grid {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 8px;
+            }
+            .gallery-item:nth-child(1) {
+                grid-column: span 2;
+                grid-row: span 1;
+                aspect-ratio: 16/10;
+            }
+            .gallery-item:nth-child(4) {
+                grid-column: span 1;
+            }
+        }
+        @media (max-width: 480px) {
+            .gallery-grid {
+                grid-template-columns: 1fr;
+            }
+            .gallery-item:nth-child(1) {
+                grid-column: span 1;
+            }
+            .gallery-item:nth-child(4) {
+                grid-column: span 1;
+            }
+        }
+
+        /* About / Craft */
+        .about-section {
+            background: var(--black);
+        }
+        .about-grid {
+            display: grid;
+            grid-template-columns: 0.9fr 1.1fr;
+            gap: 60px;
+            align-items: center;
+            max-width: var(--container);
+            margin: 0 auto;
+        }
+        .about-text .section-tag {
+            margin-bottom: 10px;
+        }
+        .about-text h2 {
+            font-family: var(--font-serif);
+            font-size: clamp(1.6rem, 3vw, 2.4rem);
+            font-weight: 300;
+            letter-spacing: 0.04em;
+            color: var(--white);
+            margin-bottom: 14px;
+            line-height: 1.2;
+        }
+        .about-text p {
+            color: rgba(255, 255, 255, 0.55);
+            font-size: 0.82rem;
+            letter-spacing: 0.05em;
+            line-height: 1.85;
+            margin-bottom: 12px;
+        }
+        .about-image {
+            aspect-ratio: 4/3;
+            border-radius: 3px;
+            overflow: hidden;
+            position: relative;
+        }
+        .about-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 1s var(--ease-out);
+        }
+        .about-image:hover img {
+            transform: scale(1.04);
+        }
+        @media (max-width: 768px) {
+            .about-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+        }
+
+        /* Contact */
+        .contact-section {
+            background: var(--charcoal);
+        }
+        .contact-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 48px;
+            max-width: var(--container);
+            margin: 0 auto;
+        }
+        .contact-info h3 {
+            font-family: var(--font-serif);
+            font-size: 1.3rem;
+            font-weight: 400;
+            letter-spacing: 0.06em;
+            color: var(--white);
+            margin-bottom: 12px;
+        }
+        .contact-info p {
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+        .contact-detail {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            margin-bottom: 14px;
+        }
+        .contact-detail .contact-icon {
+            font-size: 1rem;
+            color: var(--gold);
+            width: 20px;
+            text-align: center;
+        }
+        .contact-detail .contact-label {
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.4);
+            margin-bottom: 2px;
+        }
+        .contact-detail .contact-value {
+            font-size: 0.8rem;
+            letter-spacing: 0.05em;
+            color: var(--ivory);
+        }
+        .contact-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .contact-form input,
+        .contact-form textarea {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            padding: 14px 16px;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            color: var(--ivory);
+            outline: none;
+            transition: border-color 0.3s var(--ease-out), background 0.3s var(--ease-out);
+            width: 100%;
+            cursor: none;
+        }
+        .contact-form input:focus,
+        .contact-form textarea:focus {
+            border-color: var(--gold);
+            background: rgba(255, 255, 255, 0.06);
+        }
+        .contact-form textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        .contact-form input::placeholder,
+        .contact-form textarea::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+        @media (max-width: 768px) {
+            .contact-grid {
+                grid-template-columns: 1fr;
+                gap: 32px;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            padding: 50px 48px 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            background: var(--black);
+        }
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr;
+            gap: 36px;
+            max-width: var(--container);
+            margin: 0 auto;
+            padding-bottom: 36px;
+        }
+        .footer-brand {
+            font-family: var(--font-serif);
+            font-size: 1.3rem;
+            letter-spacing: 0.25em;
+            color: var(--white);
+            margin-bottom: 10px;
+        }
+        .footer-brand span {
+            color: var(--gold);
+        }
+        .footer-tagline {
+            font-size: 0.7rem;
+            letter-spacing: 0.05em;
+            color: rgba(255, 255, 255, 0.45);
+            max-width: 260px;
+            line-height: 1.7;
+        }
+        .footer h4 {
+            font-size: 0.6rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 14px;
+            font-weight: 400;
+        }
+        .footer-links {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+        .footer-links a {
+            font-size: 0.72rem;
+            letter-spacing: 0.04em;
+            color: rgba(255, 255, 255, 0.5);
+            transition: color 0.3s var(--ease-out);
+        }
+        .footer-links a:hover {
+            color: var(--white);
+        }
+        .footer-bottom {
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.04);
+            font-size: 0.6rem;
+            letter-spacing: 0.12em;
+            color: rgba(255, 255, 255, 0.3);
+        }
+        @media (max-width: 768px) {
+            .footer {
+                padding: 36px 20px 20px;
+            }
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 24px;
+            }
+        }
+        @media (max-width: 480px) {
+            .footer-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Booking Modal */
+        .booking-modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(10, 10, 10, 0.85);
+            z-index: 3000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.5s var(--ease-out), visibility 0.5s var(--ease-out);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        .booking-modal-overlay.open {
+            opacity: 1;
+            visibility: visible;
+        }
+        .booking-modal {
+            background: var(--charcoal);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 4px;
+            padding: 36px 32px;
+            width: 100%;
+            max-width: 520px;
+            max-height: 90vh;
+            overflow-y: auto;
+            position: relative;
+        }
+        .booking-modal-close {
+            position: absolute;
+            top: 16px;
+            right: 20px;
+            font-size: 1.4rem;
+            color: rgba(255, 255, 255, 0.5);
+            transition: color 0.3s var(--ease-out);
+            cursor: none;
+        }
+        .booking-modal-close:hover {
+            color: var(--white);
+        }
+        .booking-modal h3 {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            font-weight: 400;
+            letter-spacing: 0.06em;
+            color: var(--white);
+            margin-bottom: 6px;
+        }
+        .booking-modal .modal-subtitle {
+            font-size: 0.7rem;
+            letter-spacing: 0.12em;
+            color: rgba(255, 255, 255, 0.45);
+            margin-bottom: 24px;
+        }
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+        .modal-form .booking-field {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .modal-form label {
+            font-size: 0.6rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.45);
+            font-weight: 400;
+        }
+        .modal-form select,
+        .modal-form input {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            padding: 13px 16px;
+            font-size: 0.78rem;
+            letter-spacing: 0.05em;
+            color: var(--ivory);
+            outline: none;
+            transition: border-color 0.3s var(--ease-out);
+            -webkit-appearance: none;
+            appearance: none;
+            cursor: none;
+            width: 100%;
+        }
+        .modal-form select:focus,
+        .modal-form input:focus {
+            border-color: var(--gold);
+        }
+        .modal-form select option {
+            background: var(--charcoal);
+            color: var(--ivory);
+            cursor: none;
+        }
+        .modal-form .modal-submit {
+            padding: 15px;
+            background: var(--gold);
+            color: var(--black);
+            font-size: 0.7rem;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            font-weight: 500;
+            border: 1px solid var(--gold);
+            border-radius: 2px;
+            margin-top: 8px;
+            transition: all 0.4s var(--ease-out);
+            cursor: none;
+        }
+        .modal-form .modal-submit:hover {
+            background: var(--gold-light);
+            border-color: var(--gold-light);
+        }
+        @media (max-width: 480px) {
+            .booking-modal {
+                padding: 24px 20px;
+            }
+        }
+
+        /* Mobile Bottom Nav */
+        .mobile-bottom-nav {
+            display: none;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            z-index: 1200;
+            padding: 6px 0;
+            padding-bottom: env(safe-area-inset-bottom, 6px);
+        }
+        .mobile-bottom-nav .nav-items {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+        .mobile-bottom-nav button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+            font-size: 0.5rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.45);
+            transition: color 0.3s var(--ease-out);
+            cursor: none;
+            background: none;
+            border: none;
+            padding: 4px 6px;
+        }
+        .mobile-bottom-nav button.active,
+        .mobile-bottom-nav button:hover {
+            color: var(--gold);
+        }
+        .mobile-bottom-nav .nav-icon {
+            font-size: 1.1rem;
+            line-height: 1;
+        }
+        @media (max-width: 768px) {
+            .mobile-bottom-nav {
+                display: block;
+            }
+            body {
+                padding-bottom: 52px;
+            }
+        }
+
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
+            html {
+                scroll-behavior: auto;
+            }
+            .reveal {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            .hero-bg {
+                transform: scale(1);
+            }
+            .hero-eyebrow,
+            .hero-title,
+            .hero-subtitle,
+            .hero-cta,
+            .hero-scroll-indicator {
+                animation: none !important;
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Preloader -->
+    <div class="preloader" id="preloader" aria-hidden="true">
+        <span class="preloader-word">ATELIER CUT</span>
+    </div>
+
+    <!-- Custom Cursor -->
+    <div class="cursor-dot" id="cursorDot" aria-hidden="true"></div>
+    <div class="cursor-ring" id="cursorRing" aria-hidden="true"></div>
+
+    <!-- Navigation -->
+    <header class="nav" id="mainNav" role="banner">
+        <a href="#" class="nav-brand" aria-label="ATELIER CUT Home">ATELIER <span>CUT</span></a>
+        <nav class="nav-links" role="navigation" aria-label="Main navigation">
+            <a href="#home">Home</a>
+            <a href="#services">Services</a>
+            <a href="#barbers">Barbers</a>
+            <a href="#gallery">Gallery</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </nav>
+        <div class="nav-actions">
+            <button class="nav-search-btn" aria-label="Search"><span>🔍</span><span class="nav-label">Search</span></button>
+            <button class="nav-book-btn" id="navBookBtn" aria-label="Book Now">Book Now</button>
+            <button class="nav-mobile-toggle" id="mobileToggle" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobileMenu" role="dialog" aria-label="Mobile navigation">
+        <a href="#home">Home</a>
+        <a href="#services">Services</a>
+        <a href="#barbers">Barbers</a>
+        <a href="#gallery">Gallery</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+        <button class="mobile-book-btn" id="mobileBookBtn">Book Your Chair</button>
+    </div>
+
+    <!-- Hero -->
+    <section class="hero" id="home" aria-label="ATELIER CUT Hero">
+        <img
+        src="https://images.unsplash.com/photo-1503951914875-452162b0f3f1?w=1920&q=80&auto=format&fit=crop"
+        alt="Barber performing a precision fade haircut in dramatic lighting at ATELIER CUT"
+        class="hero-bg"
+        loading="eager"
+        fetchpriority="high">
+        <div class="hero-overlay" aria-hidden="true"></div>
+        <div class="hero-content">
+            <p class="hero-eyebrow">ATELIER CUT — Luxury Barbershop</p>
+            <h1 class="hero-title">Crafted for<br>Your <em>Style</em></h1>
+            <p class="hero-subtitle">Precision cuts. Expert grooming. An experience worth returning to.</p>
+            <div class="hero-cta">
+                <button class="btn btn-primary" id="heroBookBtn">Book Your Chair</button>
+                <a href="#services" class="btn btn-outline">Explore Our Services</a>
+            </div>
+        </div>
+        <div class="hero-scroll-indicator" aria-hidden="true">Scroll</div>
+    </section>
+
+    <!-- Quick Booking -->
+    <section class="section booking-section" aria-label="Quick Booking">
+        <div class="booking-container">
+            <div class="booking-info reveal">
+                <span class="section-tag">Reserve Your Chair</span>
+                <h2>Book in <em>seconds.</em></h2>
+                <p>Select your service, choose your barber, pick a time — done. Your chair is waiting.</p>
+            </div>
+            <div class="booking-form reveal reveal-delay-1">
+                <div class="booking-field">
+                    <label for="quickService">Service</label>
+                    <select id="quickService">
+                        <option value="">Select Service</option>
+                        <option value="signature">Signature Haircut</option>
+                        <option value="classic">Classic Cut</option>
+                        <option value="beard">Beard Sculpt</option>
+                        <option value="hot-towel">Hot Towel Shave</option>
+                        <option value="combo">Cut + Beard Combo</option>
+                    </select>
+                </div>
+                <div class="booking-field">
+                    <label for="quickBarber">Barber</label>
+                    <select id="quickBarber">
+                        <option value="">Select Barber</option>
+                        <option value="marcus">Marcus</option>
+                        <option value="james">James</option>
+                        <option value="david">David</option>
+                    </select>
+                </div>
+                <div class="booking-field">
+                    <label for="quickDate">Date</label>
+                    <input type="date" id="quickDate" aria-label="Select date">
+                </div>
+                <div class="booking-field">
+                    <label for="quickTime">Time</label>
+                    <input type="time" id="quickTime" aria-label="Select time">
+                </div>
+                <button class="booking-submit" id="quickBookingSubmit">Book Appointment</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- The Experience -->
+    <section class="section experience-section" aria-label="The Barbershop Experience">
+        <div class="experience-grid">
+            <div class="experience-image reveal">
+                <img
+                src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=1200&q=80&auto=format&fit=crop"
+                alt="The ATELIER CUT barbershop interior with premium chairs and warm lighting"
+                loading="lazy">
+            </div>
+            <div class="experience-details reveal reveal-delay-1">
+                <span class="section-tag">The Experience</span>
+                <h2>Not Just a <em>Haircut.</em></h2>
+                <p>A place where traditional barbering meets modern style, precision, and atmosphere. From the moment you sit down, everything is considered — the angle of the mirror, the warmth of the towel, the weight of the scissors.</p>
+                <p>Our space is designed for comfort and confidence. Whether you're here for a quick shape-up or a full transformation, you'll leave feeling sharper than you arrived.</p>
+                <a href="#about" class="btn btn-outline">Discover Our Story</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services -->
+    <section class="section services-section" id="services" aria-label="Services">
+        <div class="section-header reveal">
+            <span class="section-tag">Our Services</span>
+            <h2 class="section-title">Precision in <em>Every Detail</em></h2>
+            <p class="section-text">Every service is performed with complete focus and care, tailored to your individual style and features.</p>
+        </div>
+        <div class="services-list">
+            <div class="service-item reveal">
+                <span class="service-duration">45 min</span>
+                <p class="service-name">Signature Haircut</p>
+                <p class="service-desc">Precision haircut tailored to your face shape, style, and preference. Includes consultation, cut, and finish.</p>
+                <span class="service-price">$65</span>
+            </div>
+            <div class="service-item reveal reveal-delay-1">
+                <span class="service-duration">40 min</span>
+                <p class="service-name">Classic Cut</p>
+                <p class="service-desc">Timeless barbering with modern precision. Clean lines, balanced proportions, effortless style.</p>
+                <span class="service-price">$55</span>
+            </div>
+            <div class="service-item reveal reveal-delay-2">
+                <span class="service-duration">30 min</span>
+                <p class="service-name">Beard Sculpt</p>
+                <p class="service-desc">Detailed beard shaping, trimming, and finishing with hot towel and premium oils.</p>
+                <span class="service-price">$35</span>
+            </div>
+            <div class="service-item reveal reveal-delay-3">
+                <span class="service-duration">30 min</span>
+                <p class="service-name">Hot Towel Shave</p>
+                <p class="service-desc">Traditional straight-razor shave with hot towels, pre-shave oil, and post-shave balm.</p>
+                <span class="service-price">$45</span>
+            </div>
+            <div class="service-item reveal reveal-delay-4">
+                <span class="service-duration">60 min</span>
+                <p class="service-name">Cut + Beard Combo</p>
+                <p class="service-desc">The complete grooming experience. Signature haircut paired with a detailed beard sculpt.</p>
+                <span class="service-price">$85</span>
+            </div>
+            <div class="service-item reveal reveal-delay-4">
+                <span class="service-duration">20 min</span>
+                <p class="service-name">Shape-Up</p>
+                <p class="service-desc">Quick line-up and edge work to keep your cut sharp between full appointments.</p>
+                <span class="service-price">$30</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Barbers -->
+    <section class="section barbers-section" id="barbers" aria-label="Barbers">
+        <div class="section-header reveal">
+            <span class="section-tag">The Barbers</span>
+            <h2 class="section-title">Masters of <em>the Craft</em></h2>
+            <p class="section-text">Each of our barbers brings years of experience, a sharp eye, and a genuine commitment to your style.</p>
+        </div>
+        <div class="barbers-grid">
+            <div class="barber-card reveal">
+                <div class="barber-image">
+                    <img
+                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80&auto=format&fit=crop"
+                    alt="Marcus — Master Barber at ATELIER CUT"
+                    loading="lazy">
+                </div>
+                <p class="barber-name">Marcus</p>
+                <p class="barber-title">Master Barber</p>
+                <p class="barber-bio">15 years of experience. Specializes in fades, precision cuts, and classic barbering.</p>
+                <a href="#" class="barber-book-link">Book with Marcus</a>
+            </div>
+            <div class="barber-card reveal reveal-delay-1">
+                <div class="barber-image">
+                    <img
+                    src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=800&q=80&auto=format&fit=crop"
+                    alt="James — Senior Stylist at ATELIER CUT"
+                    loading="lazy">
+                </div>
+                <p class="barber-name">James</p>
+                <p class="barber-title">Senior Stylist</p>
+                <p class="barber-bio">Known for modern styles, beard sculpting, and creative cuts for all hair types.</p>
+                <a href="#" class="barber-book-link">Book with James</a>
+            </div>
+            <div class="barber-card reveal reveal-delay-2">
+                <div class="barber-image">
+                    <img
+                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=800&q=80&auto=format&fit=crop"
+                    alt="David — Barber at ATELIER CUT"
+                    loading="lazy">
+                </div>
+                <p class="barber-name">David</p>
+                <p class="barber-title">Barber</p>
+                <p class="barber-bio">Expert in classic cuts, straight-razor shaves, and hot towel treatments.</p>
+                <a href="#" class="barber-book-link">Book with David</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery -->
+    <section class="section gallery-section" id="gallery" aria-label="Gallery">
+        <div class="section-header reveal">
+            <span class="section-tag">Gallery</span>
+            <h2 class="section-title">The <em>Work</em> Speaks</h2>
+        </div>
+        <div class="gallery-grid">
+            <div class="gallery-item reveal">
+                <img
+                src="https://images.unsplash.com/photo-1621605815971-fbc98d665033?w=1000&q=80&auto=format&fit=crop"
+                alt="Barber performing a detailed fade haircut"
+                loading="lazy">
+            </div>
+            <div class="gallery-item reveal reveal-delay-1">
+                <img
+                src="https://images.unsplash.com/photo-1599351431202-1e0f0137899a?w=800&q=80&auto=format&fit=crop"
+                alt="Beard grooming with straight razor"
+                loading="lazy">
+            </div>
+            <div class="gallery-item reveal reveal-delay-2">
+                <img
+                src="https://images.unsplash.com/photo-1517832606299-7ae9b720a186?w=800&q=80&auto=format&fit=crop"
+                alt="Premium barber tools and equipment"
+                loading="lazy">
+            </div>
+            <div class="gallery-item reveal reveal-delay-3">
+                <img
+                src="https://images.unsplash.com/photo-1521490878401-9b8a5c8f9bb1?w=800&q=80&auto=format&fit=crop"
+                alt="Hot towel treatment preparation"
+                loading="lazy">
+            </div>
+            <div class="gallery-item reveal reveal-delay-1">
+                <img
+                src="https://images.unsplash.com/photo-1521490878401-9b8a5c8f9bb1?w=800&q=80&auto=format&fit=crop"
+                alt="Client receiving a premium haircut"
+                loading="lazy">
+            </div>
+            <div class="gallery-item reveal reveal-delay-2">
+                <img
+                src="https://images.unsplash.com/photo-1519345182560-3f2917c472ef?w=800&q=80&auto=format&fit=crop"
+                alt="Barber shop interior with vintage chairs"
+                loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- About -->
+    <section class="section about-section" id="about" aria-label="About ATELIER CUT">
+        <div class="about-grid">
+            <div class="about-text reveal">
+                <span class="section-tag">Our Story</span>
+                <h2>Where Craft Meets <em>Community</em></h2>
+                <p>ATELIER CUT was founded on a simple belief — a great haircut is about more than just cutting hair. It's about confidence, attention to detail, and creating a space where men feel understood.</p>
+                <p>Our barbers are trained in both classic techniques and modern styling, ensuring every client leaves looking and feeling their absolute best. We use only premium products and tools, and we take the time to understand exactly what you want.</p>
+                <p>This isn't just a barbershop. It's a place to slow down, sit back, and enjoy the craft.</p>
+            </div>
+            <div class="about-image reveal reveal-delay-1">
+                <img
+                src="https://images.unsplash.com/photo-1585747860715-2ba37e788b70?w=1200&q=80&auto=format&fit=crop"
+                alt="The ATELIER CUT barbershop interior"
+                loading="lazy">
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="section contact-section" id="contact" aria-label="Contact">
+        <div class="section-header reveal">
+            <span class="section-tag">Contact Us</span>
+            <h2 class="section-title">Visit the <em>Shop</em></h2>
+        </div>
+        <div class="contact-grid">
+            <div class="contact-info reveal">
+                <h3>ATELIER CUT</h3>
+                <p>We're located in the heart of the city. Walk-ins are welcome, but booking ahead ensures your preferred time.</p>
+                <div class="contact-detail">
+                    <span class="contact-icon">📍</span>
+                    <div>
+                        <p class="contact-label">Address</p>
+                        <p class="contact-value">128 Madison Avenue, Suite 2, New York, NY</p>
+                    </div>
+                </div>
+                <div class="contact-detail">
+                    <span class="contact-icon">📞</span>
+                    <div>
+                        <p class="contact-label">Phone</p>
+                        <p class="contact-value">(555) 123-4567</p>
+                    </div>
+                </div>
+                <div class="contact-detail">
+                    <span class="contact-icon">✉️</span>
+                    <div>
+                        <p class="contact-label">Email</p>
+                        <p class="contact-value">hello@ateliercut.com</p>
+                    </div>
+                </div>
+                <div class="contact-detail">
+                    <span class="contact-icon">🕐</span>
+                    <div>
+                        <p class="contact-label">Hours</p>
+                        <p class="contact-value">Mon–Sat: 9:00 AM – 8:00 PM · Sun: Closed</p>
+                    </div>
+                </div>
+            </div>
+            <div class="contact-form reveal reveal-delay-1">
+                <input type="text" placeholder="Your Name" aria-label="Your name">
+                <input type="email" placeholder="Email Address" aria-label="Email address">
+                <textarea placeholder="Tell us what you're looking for..." aria-label="Your message"></textarea>
+                <button class="btn btn-primary" style="align-self:flex-start;">Send Message</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer" role="contentinfo">
+        <div class="footer-grid">
+            <div>
+                <p class="footer-brand">ATELIER <span>CUT</span></p>
+                <p class="footer-tagline">Precision cuts. Expert grooming. An experience worth returning to.</p>
+            </div>
+            <div>
+                <h4>Explore</h4>
+                <ul class="footer-links">
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#services">Services</a></li>
+                    <li><a href="#barbers">Barbers</a></li>
+                    <li><a href="#gallery">Gallery</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Services</h4>
+                <ul class="footer-links">
+                    <li><a href="#services">Signature Haircut</a></li>
+                    <li><a href="#services">Classic Cut</a></li>
+                    <li><a href="#services">Beard Sculpt</a></li>
+                    <li><a href="#services">Hot Towel Shave</a></li>
+                    <li><a href="#services">Cut + Beard Combo</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>Visit</h4>
+                <ul class="footer-links">
+                    <li><a href="#contact">128 Madison Avenue</a></li>
+                    <li><a href="#contact">New York, NY</a></li>
+                    <li><a href="tel:5551234567">(555) 123-4567</a></li>
+                    <li><a href="mailto:hello@ateliercut.com">hello@ateliercut.com</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>© 2026 ATELIER CUT. All rights reserved. Crafted with precision.</p>
+        </div>
+    </footer>
+
+    <!-- Booking Modal -->
+    <div class="booking-modal-overlay" id="bookingModalOverlay" role="dialog" aria-label="Book Appointment">
+        <div class="booking-modal">
+            <button class="booking-modal-close" id="bookingModalClose" aria-label="Close booking modal">×</button>
+            <h3>Book Your Chair</h3>
+            <p class="modal-subtitle">Complete the form below to secure your appointment.</p>
+            <div class="modal-form">
+                <div class="booking-field">
+                    <label for="modalService">Service</label>
+                    <select id="modalService">
+                        <option value="">Select Service</option>
+                        <option value="signature">Signature Haircut — $65</option>
+                        <option value="classic">Classic Cut — $55</option>
+                        <option value="beard">Beard Sculpt — $35</option>
+                        <option value="hot-towel">Hot Towel Shave — $45</option>
+                        <option value="combo">Cut + Beard Combo — $85</option>
+                        <option value="shape-up">Shape-Up — $30</option>
+                    </select>
+                </div>
+                <div class="booking-field">
+                    <label for="modalBarber">Barber</label>
+                    <select id="modalBarber">
+                        <option value="">Select Barber</option>
+                        <option value="marcus">Marcus — Master Barber</option>
+                        <option value="james">James — Senior Stylist</option>
+                        <option value="david">David — Barber</option>
+                    </select>
+                </div>
+                <div class="booking-field">
+                    <label for="modalDate">Date</label>
+                    <input type="date" id="modalDate" aria-label="Select date">
+                </div>
+                <div class="booking-field">
+                    <label for="modalTime">Time</label>
+                    <input type="time" id="modalTime" aria-label="Select time">
+                </div>
+                <div class="booking-field">
+                    <label for="modalName">Your Name</label>
+                    <input type="text" id="modalName" placeholder="Full name" aria-label="Your name">
+                </div>
+                <div class="booking-field">
+                    <label for="modalPhone">Phone Number</label>
+                    <input type="tel" id="modalPhone" placeholder="(555) 123-4567" aria-label="Phone number">
+                </div>
+                <button class="modal-submit" id="modalSubmit">Confirm Appointment</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile Bottom Navigation -->
+    <nav class="mobile-bottom-nav" role="navigation" aria-label="Mobile navigation">
+        <div class="nav-items">
+            <button class="active" aria-label="Home">
+                <span class="nav-icon">⌂</span> Home
+            </button>
+            <button aria-label="Services">
+                <span class="nav-icon">✂</span> Services
+            </button>
+            <button id="mobileBookBtnBottom" aria-label="Book Now">
+                <span class="nav-icon">📅</span> Book
+            </button>
+            <button aria-label="Barbers">
+                <span class="nav-icon">👤</span> Barbers
+            </button>
+            <button aria-label="Contact">
+                <span class="nav-icon">☎</span> Contact
+            </button>
+        </div>
+    </nav>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ==================== Preloader ====================
+            const preloader = document.getElementById('preloader');
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    preloader.classList.add('hidden');
+                }, 1600);
+            });
+            setTimeout(() => {
+                preloader.classList.add('hidden');
+            }, 3000);
+
+            // ==================== Custom Cursor ====================
+            const cursorDot = document.getElementById('cursorDot');
+            const cursorRing = document.getElementById('cursorRing');
+            let mouseX = 0,
+                mouseY = 0,
+                ringX = 0,
+                ringY = 0;
+            const isMobile = window.matchMedia('(max-width: 768px)').matches;
+
+            if (!isMobile && cursorDot && cursorRing) {
+                document.addEventListener('mousemove', (e) => {
+                    mouseX = e.clientX;
+                    mouseY = e.clientY;
+                    cursorDot.style.transform = `translate(${mouseX - 3}px, ${mouseY - 3}px)`;
+                    cursorRing.style.transform = `translate(${ringX - 22}px, ${ringY - 22}px)`;
+                });
+
+                function animateRing() {
+                    ringX += (mouseX - ringX) * 0.16;
+                    ringY += (mouseY - ringY) * 0.16;
+                    cursorRing.style.transform = `translate(${ringX - 22}px, ${ringY - 22}px)`;
+                    requestAnimationFrame(animateRing);
+                }
+                animateRing();
+
+                const interactiveElements = document.querySelectorAll(
+                    'a, button, .service-item, .barber-card, .gallery-item, .experience-image, .about-image, .booking-field select, .booking-field input, .contact-form input, .contact-form textarea, .btn'
+                );
+                interactiveElements.forEach(el => {
+                    el.addEventListener('mouseenter', () => {
+                        cursorRing.classList.add('is-active');
+                        cursorDot.classList.add('is-active');
+                    });
+                    el.addEventListener('mouseleave', () => {
+                        cursorRing.classList.remove('is-active');
+                        cursorDot.classList.remove('is-active');
+                    });
+                });
+
+                document.addEventListener('mouseleave', () => {
+                    cursorDot.style.opacity = '0';
+                    cursorRing.style.opacity = '0';
+                });
+                document.addEventListener('mouseenter', () => {
+                    cursorDot.style.opacity = '1';
+                    cursorRing.style.opacity = '1';
+                });
+            } else {
+                if (cursorDot) cursorDot.style.display = 'none';
+                if (cursorRing) cursorRing.style.display = 'none';
+            }
+
+            // ==================== Navigation ====================
+            const nav = document.getElementById('mainNav');
+
+            function handleScroll() {
+                const scrollY = window.scrollY;
+                if (scrollY > 60) {
+                    nav.classList.add('scrolled');
+                } else {
+                    nav.classList.remove('scrolled');
+                }
+            }
+            window.addEventListener('scroll', handleScroll, { passive: true });
+            handleScroll();
+
+            // Mobile menu toggle
+            const mobileToggle = document.getElementById('mobileToggle');
+            const mobileMenu = document.getElementById('mobileMenu');
+
+            mobileToggle.addEventListener('click', () => {
+                const isOpen = mobileMenu.classList.contains('open');
+                mobileMenu.classList.toggle('open');
+                mobileToggle.classList.toggle('active');
+                document.body.classList.toggle('modal-open');
+                mobileToggle.setAttribute('aria-expanded', !isOpen);
+            });
+
+            mobileMenu.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    mobileMenu.classList.remove('open');
+                    mobileToggle.classList.remove('active');
+                    document.body.classList.remove('modal-open');
+                });
+            });
+
+            // ==================== Booking Modal ====================
+            const bookingModalOverlay = document.getElementById('bookingModalOverlay');
+            const bookingModalClose = document.getElementById('bookingModalClose');
+            const heroBookBtn = document.getElementById('heroBookBtn');
+            const navBookBtn = document.getElementById('navBookBtn');
+            const mobileBookBtn = document.getElementById('mobileBookBtn');
+            const mobileBookBtnBottom = document.getElementById('mobileBookBtnBottom');
+            const quickBookingSubmit = document.getElementById('quickBookingSubmit');
+            const modalSubmit = document.getElementById('modalSubmit');
+
+            function openBookingModal() {
+                bookingModalOverlay.classList.add('open');
+                document.body.classList.add('modal-open');
+            }
+
+            function closeBookingModal() {
+                bookingModalOverlay.classList.remove('open');
+                document.body.classList.remove('modal-open');
+            }
+
+            heroBookBtn.addEventListener('click', openBookingModal);
+            navBookBtn.addEventListener('click', openBookingModal);
+            mobileBookBtn.addEventListener('click', () => {
+                closeMobileMenu();
+                openBookingModal();
+            });
+            mobileBookBtnBottom.addEventListener('click', openBookingModal);
+            bookingModalClose.addEventListener('click', closeBookingModal);
+            bookingModalOverlay.addEventListener('click', (e) => {
+                if (e.target === bookingModalOverlay) closeBookingModal();
+            });
+
+            function closeMobileMenu() {
+                mobileMenu.classList.remove('open');
+                mobileToggle.classList.remove('active');
+                document.body.classList.remove('modal-open');
+            }
+
+            // Quick booking submit
+            quickBookingSubmit.addEventListener('click', () => {
+                const service = document.getElementById('quickService').value;
+                const barber = document.getElementById('quickBarber').value;
+                const date = document.getElementById('quickDate').value;
+                const time = document.getElementById('quickTime').value;
+
+                if (service && barber && date && time) {
+                    openBookingModal();
+                    document.getElementById('modalService').value = service;
+                    document.getElementById('modalBarber').value = barber;
+                    document.getElementById('modalDate').value = date;
+                    document.getElementById('modalTime').value = time;
+                } else {
+                    openBookingModal();
+                }
+            });
+
+            // Modal submit
+            modalSubmit.addEventListener('click', () => {
+                const service = document.getElementById('modalService').value;
+                const barber = document.getElementById('modalBarber').value;
+                const date = document.getElementById('modalDate').value;
+                const time = document.getElementById('modalTime').value;
+                const name = document.getElementById('modalName').value;
+                const phone = document.getElementById('modalPhone').value;
+
+                if (service && barber && date && time && name && phone) {
+                    alert('Thank you, ' + name + '! Your appointment is confirmed.\n\n' +
+                        'Service: ' + service + '\n' +
+                        'Barber: ' + barber + '\n' +
+                        'Date: ' + date + ' at ' + time + '\n\n' +
+                        'We look forward to seeing you at ATELIER CUT.');
+                    closeBookingModal();
+                    // Reset form
+                    document.getElementById('modalService').value = '';
+                    document.getElementById('modalBarber').value = '';
+                    document.getElementById('modalDate').value = '';
+                    document.getElementById('modalTime').value = '';
+                    document.getElementById('modalName').value = '';
+                    document.getElementById('modalPhone').value = '';
+                } else {
+                    alert('Please fill in all fields to confirm your booking.');
+                }
+            });
+
+            // ==================== Scroll Reveal ====================
+            const revealElements = document.querySelectorAll('.reveal');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, {
+                threshold: 0.12,
+                rootMargin: '0px 0px -50px 0px'
+            });
+
+            revealElements.forEach(el => observer.observe(el));
+
+            // ==================== Smooth Anchor Scrolling ====================
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    const targetEl = document.querySelector(targetId);
+                    if (targetEl) {
+                        e.preventDefault();
+                        const navHeight = nav.offsetHeight;
+                        const targetPosition = targetEl.getBoundingClientRect().top + window
+                            .scrollY - navHeight;
+                        window.scrollTo({ top: targetPosition, behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // ==================== Mobile Bottom Nav ====================
+            const mobileNavButtons = document.querySelectorAll('.mobile-bottom-nav button');
+            mobileNavButtons.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    mobileNavButtons.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                });
+            });
+
+            // ==================== Keyboard Navigation ====================
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    closeBookingModal();
+                    closeMobileMenu();
+                }
+            });
+
+            // ==================== Service Item Book Links ====================
+            document.querySelectorAll('.service-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    openBookingModal();
+                });
+            });
+
+            // ==================== Barber Book Links ====================
+            document.querySelectorAll('.barber-book-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    openBookingModal();
+                });
+            });
+
+            console.log('ATELIER CUT — Luxury Barbershop');
+            console.log('Precision cuts. Expert grooming. An experience worth returning to.');
+        })();
+    </script>
+</body>
+</html>
